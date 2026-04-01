@@ -2,11 +2,15 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Checklist Torre - GDS</title>
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
     body {
       font-family: Arial, sans-serif;
@@ -15,7 +19,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 900px;
       margin: 0 auto;
     }
 
@@ -23,54 +27,63 @@
       background: #fff;
       padding: 30px;
       border-radius: 8px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     }
 
     .logo-main {
       width: 200px;
       display: block;
-      margin: 0 auto 10px auto;
+      margin: 0 auto 12px auto;
     }
 
     h1 {
       text-align: center;
       color: #0066cc;
-      margin-bottom: 20px;
-    }
-
-    .form-group {
-      margin-bottom: 18px;
+      font-size: 24px;
+      margin-bottom: 24px;
     }
 
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 15px;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
     }
 
     label {
-      font-weight: bold;
-      font-size: 14px;
-      margin-bottom: 6px;
       display: block;
+      margin-bottom: 6px;
+      font-size: 14px;
+      font-weight: bold;
+      color: #333;
     }
 
-    input, textarea {
+    input,
+    select,
+    textarea {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       border: 1px solid #ccc;
       border-radius: 4px;
+      font-size: 14px;
+      font-family: Arial, sans-serif;
     }
 
     textarea {
       min-height: 220px;
+      resize: vertical;
     }
 
-    .check {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: 10px;
+    input:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #0066cc;
+      box-shadow: 0 0 4px rgba(0, 102, 204, 0.2);
     }
 
     .buttons {
@@ -82,29 +95,83 @@
 
     button {
       flex: 1;
-      padding: 12px;
-      font-weight: bold;
+      min-width: 180px;
+      padding: 14px;
       border: none;
       border-radius: 4px;
+      font-size: 15px;
+      font-weight: bold;
+      color: #fff;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-gerar {
+      background: #0066cc;
+    }
+
+    .btn-gerar:hover {
+      background: #0052a3;
+    }
+
+    .btn-copy {
+      background: #0b5ed7;
+    }
+
+    .btn-copy:hover {
+      background: #0a58ca;
+    }
+
+    .btn-wa {
+      background: #25D366;
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-wa.enabled {
+      opacity: 1;
       cursor: pointer;
     }
 
-    .btn-gerar { background: #0066cc; color: #fff; }
-    .btn-copy { background: #0b5ed7; color: #fff; }
-    .btn-wa { background: #25D366; color: #fff; opacity: 0.5; }
-    .btn-wa.enabled { opacity: 1; }
-    .btn-clear { background: #6c757d; color: #fff; }
-
-    .preview {
-      margin-top: 20px;
-      background: #fff;
-      border: 1px solid #ddd;
-      padding: 15px;
-      white-space: pre-wrap;
+    .btn-wa.enabled:hover {
+      filter: brightness(0.95);
     }
 
-    @media(max-width:600px){
-      .form-row { grid-template-columns: 1fr; }
+    .btn-clear {
+      background: #6c757d;
+    }
+
+    .btn-clear:hover {
+      background: #5a6268;
+    }
+
+    .preview-box {
+      margin-top: 20px;
+      padding: 15px;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      background: #fafafa;
+      white-space: pre-wrap;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #222;
+    }
+
+    .note {
+      font-size: 12px;
+      color: #555;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    @media (max-width: 700px) {
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      button {
+        min-width: 100%;
+      }
     }
   </style>
 </head>
@@ -112,32 +179,89 @@
 <body>
   <div class="container">
     <div class="box">
-
-      <img src="logo.png" class="logo-main" alt="GDS Logística">
+      <img src="logo.png" class="logo-main" alt="GDS Logística" />
 
       <h1>Checklist Diário - Torre</h1>
 
       <form id="form">
-
         <div class="form-row">
           <div class="form-group">
-            <label>Data</label>
-            <input type="date" id="data" required>
+            <label for="data">Data</label>
+            <input type="date" id="data" required />
           </div>
 
           <div class="form-group">
-            <label>WhatsApp</label>
-            <input type="tel" id="wa" placeholder="5511999999999">
+            <label for="wa">WhatsApp</label>
+            <input type="tel" id="wa" placeholder="5511999999999" />
           </div>
-        </div>
-
-        <div class="check">
-          <input type="checkbox" id="sextaManual">
-          <label>Forçar sexta-feira</label>
         </div>
 
         <div class="form-group">
-          <label>Mensagem</label>
+          <label for="dc">Double check</label>
+          <select id="dc">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="missing">Missing tratado</label>
+          <select id="missing">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="radio">Rádio busca enviado</label>
+          <select id="radio">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="sk">Remarque SK feito</label>
+          <select id="sk">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="riachuelo">Pré-alerta Riachuelo enviado</label>
+          <select id="riachuelo">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="pagamento">Planilha pagamento atualizada</label>
+          <select id="pagamento">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="monitoramento">Monitoramento entregadores enviado</label>
+          <select id="monitoramento">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="presenca">Presença do dia seguinte enviada</label>
+          <select id="presenca">
+            <option value="SIM">SIM</option>
+            <option value="NÃO">NÃO</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="msg">Mensagem</label>
           <textarea id="msg" readonly></textarea>
         </div>
 
@@ -145,11 +269,14 @@
           <button type="submit" class="btn-gerar">Gerar</button>
           <button type="button" class="btn-copy" id="copy">Copiar</button>
           <button type="button" class="btn-wa" id="waBtn">WhatsApp</button>
-          <button type="reset" class="btn-clear">Limpar</button>
+          <button type="reset" class="btn-clear" id="clearBtn">Limpar</button>
         </div>
 
-        <div class="preview" id="preview">Nenhuma mensagem gerada</div>
+        <div class="note">
+          Na sexta-feira, o sistema adiciona automaticamente os itens de sábado, domingo e segunda.
+        </div>
 
+        <div class="preview-box" id="preview">Nenhuma mensagem gerada.</div>
       </form>
     </div>
   </div>
@@ -159,85 +286,130 @@
     const msg = document.getElementById("msg");
     const preview = document.getElementById("preview");
     const waBtn = document.getElementById("waBtn");
+    const waInput = document.getElementById("wa");
+    const clearBtn = document.getElementById("clearBtn");
 
-    function formatDateBR(dateStr){
-      const [y,m,d] = dateStr.split("-");
+    const dc = document.getElementById("dc");
+    const missing = document.getElementById("missing");
+    const radio = document.getElementById("radio");
+    const sk = document.getElementById("sk");
+    const riachuelo = document.getElementById("riachuelo");
+    const pagamento = document.getElementById("pagamento");
+    const monitoramento = document.getElementById("monitoramento");
+    const presenca = document.getElementById("presenca");
+
+    function formatDateBR(dateStr) {
+      if (!dateStr) return "";
+      const [y, m, d] = dateStr.split("-");
       return `${d}/${m}/${y}`;
     }
 
-    function isFriday(dateStr){
-      return new Date(dateStr+"T00:00:00").getDay() === 5;
+    function isFriday(dateStr) {
+      if (!dateStr) return false;
+      return new Date(dateStr + "T00:00:00").getDay() === 5;
     }
 
-    function build(data, sexta){
+    function onlyDigits(value) {
+      return (value || "").replace(/\D/g, "");
+    }
+
+    function buildMessage() {
+      const dataInput = document.getElementById("data").value;
+      const dataFormatada = formatDateBR(dataInput);
+
       let texto =
 `📅 CHECKLIST DIÁRIO – TORRE
 
-DATA: ${data}
+DATA: ${dataFormatada}
 
-Double check – ___:___
-Missing tratado – ___:___
-Rádio busca enviado – ___:___
-Remarque SK feito – ___:___
-Pré-alerta Riachuelo enviado – ___:___
-Planilha pagamento atualizada – ___:___
-Monitoramento entregadores enviado – ___:___
-Presença do dia seguinte enviada – ___:___`;
+Double check – ${dc.value}
+Missing tratado – ${missing.value}
+Rádio busca enviado – ${radio.value}
+Remarque SK feito – ${sk.value}
+Pré-alerta Riachuelo enviado – ${riachuelo.value}
+Planilha pagamento atualizada – ${pagamento.value}
+Monitoramento entregadores enviado – ${monitoramento.value}
+Presença do dia seguinte enviada – ${presenca.value}`;
 
-      if(sexta){
+      if (isFriday(dataInput)) {
         texto += `
 
-SEXTA:
-Pré-alerta Sáb/Dom/Seg – ___:___
-Presença Sáb e Seg – ___:___`;
+SEXTA-FEIRA:
+Pré-alerta Sáb/Dom/Seg enviado – ${riachuelo.value}
+Presença Sáb e Seg enviada – ${presenca.value}`;
       }
 
       return texto;
     }
 
-    function enableWA(){
-      const number = document.getElementById("wa").value.replace(/\D/g,"");
-      if(msg.value && number.length >= 10){
+    function updateWAButton() {
+      const numero = onlyDigits(waInput.value);
+      const temMensagem = msg.value.trim().length > 0;
+      const numeroValido = numero.length >= 10;
+
+      if (temMensagem && numeroValido) {
         waBtn.classList.add("enabled");
+        waBtn.disabled = false;
       } else {
         waBtn.classList.remove("enabled");
+        waBtn.disabled = true;
       }
     }
 
-    form.addEventListener("submit", e=>{
+    form.addEventListener("submit", function (e) {
       e.preventDefault();
 
-      const dataInput = document.getElementById("data").value;
-      const data = formatDateBR(dataInput);
-      const sexta = isFriday(dataInput) || document.getElementById("sextaManual").checked;
-
-      const texto = build(data, sexta);
-
+      const texto = buildMessage();
       msg.value = texto;
       preview.textContent = texto;
-
-      enableWA();
+      updateWAButton();
     });
 
-    document.getElementById("copy").onclick = ()=>{
-      navigator.clipboard.writeText(msg.value);
-      alert("Copiado!");
-    }
+    document.getElementById("copy").addEventListener("click", async function () {
+      const texto = msg.value.trim();
 
-    document.getElementById("waBtn").onclick = ()=>{
-      const number = document.getElementById("wa").value.replace(/\D/g,"");
-      const text = encodeURIComponent(msg.value);
-      window.open(`https://wa.me/${number}?text=${text}`);
-    }
+      if (!texto) {
+        alert("Gere a mensagem primeiro.");
+        return;
+      }
 
-    document.getElementById("wa").addEventListener("input", enableWA);
+      try {
+        await navigator.clipboard.writeText(texto);
+        alert("Mensagem copiada.");
+      } catch (error) {
+        msg.focus();
+        msg.select();
+        document.execCommand("copy");
+        alert("Mensagem copiada.");
+      }
+    });
 
-    window.onload = ()=>{
+    waBtn.addEventListener("click", function () {
+      const numero = onlyDigits(waInput.value);
+      const texto = encodeURIComponent(msg.value.trim());
+
+      if (!numero || !texto) return;
+
+      window.open(`https://wa.me/${numero}?text=${texto}`, "_blank");
+    });
+
+    waInput.addEventListener("input", updateWAButton);
+
+    clearBtn.addEventListener("click", function () {
+      msg.value = "";
+      preview.textContent = "Nenhuma mensagem gerada.";
+      waBtn.classList.remove("enabled");
+      waBtn.disabled = true;
+    });
+
+    window.addEventListener("load", function () {
       const hoje = new Date();
-      document.getElementById("data").value =
-        hoje.toISOString().split("T")[0];
-    }
+      const ano = hoje.getFullYear();
+      const mes = String(hoje.getMonth() + 1).padStart(2, "0");
+      const dia = String(hoje.getDate()).padStart(2, "0");
+      document.getElementById("data").value = `${ano}-${mes}-${dia}`;
+      waBtn.disabled = true;
+    });
   </script>
-
 </body>
 </html>
