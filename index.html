@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Checklist Torre - GDS</title>
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .box {
+      background: #fff;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .logo-main {
+      width: 200px;
+      display: block;
+      margin: 0 auto 10px auto;
+    }
+
+    h1 {
+      text-align: center;
+      color: #0066cc;
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    label {
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 6px;
+      display: block;
+    }
+
+    input, textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    textarea {
+      min-height: 220px;
+    }
+
+    .check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px;
+      font-weight: bold;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .btn-gerar { background: #0066cc; color: #fff; }
+    .btn-copy { background: #0b5ed7; color: #fff; }
+    .btn-wa { background: #25D366; color: #fff; opacity: 0.5; }
+    .btn-wa.enabled { opacity: 1; }
+    .btn-clear { background: #6c757d; color: #fff; }
+
+    .preview {
+      margin-top: 20px;
+      background: #fff;
+      border: 1px solid #ddd;
+      padding: 15px;
+      white-space: pre-wrap;
+    }
+
+    @media(max-width:600px){
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="box">
+
+      <img src="logo.png" class="logo-main" alt="GDS Logística">
+
+      <h1>Checklist Diário - Torre</h1>
+
+      <form id="form">
+
+        <div class="form-row">
+          <div class="form-group">
+            <label>Data</label>
+            <input type="date" id="data" required>
+          </div>
+
+          <div class="form-group">
+            <label>WhatsApp</label>
+            <input type="tel" id="wa" placeholder="5511999999999">
+          </div>
+        </div>
+
+        <div class="check">
+          <input type="checkbox" id="sextaManual">
+          <label>Forçar sexta-feira</label>
+        </div>
+
+        <div class="form-group">
+          <label>Mensagem</label>
+          <textarea id="msg" readonly></textarea>
+        </div>
+
+        <div class="buttons">
+          <button type="submit" class="btn-gerar">Gerar</button>
+          <button type="button" class="btn-copy" id="copy">Copiar</button>
+          <button type="button" class="btn-wa" id="waBtn">WhatsApp</button>
+          <button type="reset" class="btn-clear">Limpar</button>
+        </div>
+
+        <div class="preview" id="preview">Nenhuma mensagem gerada</div>
+
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("form");
+    const msg = document.getElementById("msg");
+    const preview = document.getElementById("preview");
+    const waBtn = document.getElementById("waBtn");
+
+    function formatDateBR(dateStr){
+      const [y,m,d] = dateStr.split("-");
+      return `${d}/${m}/${y}`;
+    }
+
+    function isFriday(dateStr){
+      return new Date(dateStr+"T00:00:00").getDay() === 5;
+    }
+
+    function build(data, sexta){
+      let texto =
+`📅 CHECKLIST DIÁRIO – TORRE
+
+DATA: ${data}
+
+Double check – ___:___
+Missing tratado – ___:___
+Rádio busca enviado – ___:___
+Remarque SK feito – ___:___
+Pré-alerta Riachuelo enviado – ___:___
+Planilha pagamento atualizada – ___:___
+Monitoramento entregadores enviado – ___:___
+Presença do dia seguinte enviada – ___:___`;
+
+      if(sexta){
+        texto += `
+
+SEXTA:
+Pré-alerta Sáb/Dom/Seg – ___:___
+Presença Sáb e Seg – ___:___`;
+      }
+
+      return texto;
+    }
+
+    function enableWA(){
+      const number = document.getElementById("wa").value.replace(/\D/g,"");
+      if(msg.value && number.length >= 10){
+        waBtn.classList.add("enabled");
+      } else {
+        waBtn.classList.remove("enabled");
+      }
+    }
+
+    form.addEventListener("submit", e=>{
+      e.preventDefault();
+
+      const dataInput = document.getElementById("data").value;
+      const data = formatDateBR(dataInput);
+      const sexta = isFriday(dataInput) || document.getElementById("sextaManual").checked;
+
+      const texto = build(data, sexta);
+
+      msg.value = texto;
+      preview.textContent = texto;
+
+      enableWA();
+    });
+
+    document.getElementById("copy").onclick = ()=>{
+      navigator.clipboard.writeText(msg.value);
+      alert("Copiado!");
+    }
+
+    document.getElementById("waBtn").onclick = ()=>{
+      const number = document.getElementById("wa").value.replace(/\D/g,"");
+      const text = encodeURIComponent(msg.value);
+      window.open(`https://wa.me/${number}?text=${text}`);
+    }
+
+    document.getElementById("wa").addEventListener("input", enableWA);
+
+    window.onload = ()=>{
+      const hoje = new Date();
+      document.getElementById("data").value =
+        hoje.toISOString().split("T")[0];
+    }
+  </script>
+
+</body>
+</html>
